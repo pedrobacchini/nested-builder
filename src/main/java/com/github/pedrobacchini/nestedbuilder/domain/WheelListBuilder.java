@@ -5,30 +5,29 @@ import java.util.List;
 
 public class WheelListBuilder {
 
-    public static WheelListBuilder newBuilder() {
-        return new WheelListBuilder();
-    }
+    static WheelListBuilder builder() { return new WheelListBuilder(); }
 
     private WheelListBuilder() { }
 
-    private List<Wheel> wheelList;
+    private final List<Wheel> wheelList = new ArrayList<>();
+    private Car.Builder carBuilder;
 
-    public WheelListBuilder withNewList() {
-        this.wheelList = new ArrayList<>();
-        return this;
-    }
-
-    public WheelListBuilder withList(List<Wheel> wheelList) {
-        this.wheelList = wheelList;
-        return this;
-    }
-
-    public WheelListBuilder addWheel(Wheel wheel) {
+    WheelListBuilder addWheel(Wheel wheel) {
         this.wheelList.add(wheel);
         return this;
     }
 
-    public List<Wheel> build() {
+    public Wheel.Builder addWheel() {
+        Wheel.Builder builder = Wheel.builder();
+        builder.withWheelListBuilder(this);
+        return builder;
+    }
+
+    public Car.Builder done() { return this.carBuilder.addWheels(this.build()); }
+
+    void withCar(Car.Builder carBuilder) { this.carBuilder = carBuilder; }
+
+    private List<Wheel> build() {
         if (this.wheelList.size() > 4) throw new IllegalArgumentException("the maximum of wheel is 4");
         return this.wheelList;
     }

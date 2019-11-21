@@ -1,21 +1,48 @@
 package com.github.pedrobacchini.nestedbuilder.domain;
 
-import lombok.Builder;
-import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
 
-@Getter
 @ToString
 public class Car {
 
-    private Engine engine;
-    private List<Wheel> wheelList;
+    private final Engine engine;
+    private final List<Wheel> wheelList;
 
-    @Builder
-    public Car(Engine engine, List<Wheel> wheelList) {
-        this.engine = engine;
-        this.wheelList = wheelList;
+    private Car(Builder builder) {
+        this.engine = builder.engine;
+        this.wheelList = builder.wheelList;
+    }
+
+    public static Builder builder() { return new Builder(); }
+
+    public static final class Builder {
+        private Engine engine;
+        private List<Wheel> wheelList;
+
+        Builder addEngine(Engine engine) {
+            this.engine = engine;
+            return this;
+        }
+
+        Builder addWheels(List<Wheel> wheelList) {
+            this.wheelList = wheelList;
+            return this;
+        }
+
+        public Engine.Builder addEngine() {
+            Engine.Builder builder = Engine.builder();
+            builder.withCar(this);
+            return builder;
+        }
+
+        public WheelListBuilder addWheels() {
+            WheelListBuilder builder = WheelListBuilder.builder();
+            builder.withCar(this);
+            return builder;
+        }
+
+        public Car build() { return new Car(this); }
     }
 }

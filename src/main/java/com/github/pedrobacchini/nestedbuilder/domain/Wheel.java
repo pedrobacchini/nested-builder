@@ -1,10 +1,13 @@
 package com.github.pedrobacchini.nestedbuilder.domain;
 
+import lombok.ToString;
+
+@ToString
 public class Wheel {
 
-    private int size;
-    private int type;
-    private int colour;
+    private final int size;
+    private final int type;
+    private final int colour;
 
     private Wheel(Builder builder) {
         this.size = builder.size;
@@ -12,8 +15,9 @@ public class Wheel {
         this.colour = builder.colour;
     }
 
-    public static Builder builder() { return new Builder(); }
+    static Builder builder() { return new Builder(); }
 
+    @SuppressWarnings("unused")
     public static Builder builder(Wheel copy) {
         Builder builder = new Builder();
         builder.size = copy.size;
@@ -22,19 +26,11 @@ public class Wheel {
         return builder;
     }
 
-    @Override
-    public String toString() {
-        return "Wheel{" +
-                "size=" + size +
-                ", type=" + type +
-                ", colour=" + colour +
-                '}';
-    }
-
     public static final class Builder {
         private int size;
         private int type;
         private int colour;
+        private WheelListBuilder wheelListBuilder;
 
         private Builder() {}
 
@@ -53,6 +49,10 @@ public class Wheel {
             return this;
         }
 
-        public Wheel build() { return new Wheel(this); }
+        public WheelListBuilder addWheelToList() { return this.wheelListBuilder.addWheel(this.build()); }
+
+        void withWheelListBuilder(WheelListBuilder wheelListBuilder) { this.wheelListBuilder = wheelListBuilder; }
+
+        private Wheel build() { return new Wheel(this); }
     }
 }
