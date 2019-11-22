@@ -2,6 +2,7 @@ package com.github.pedrobacchini.nestedbuilder.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class WheelListBuilder {
 
@@ -10,24 +11,15 @@ public class WheelListBuilder {
     private WheelListBuilder() { }
 
     private final List<Wheel> wheelList = new ArrayList<>();
-    private Car.Builder carBuilder;
 
-    WheelListBuilder addWheel(Wheel wheel) {
-        this.wheelList.add(wheel);
+    public WheelListBuilder addWheel(Consumer<Wheel.Builder> wheelBuilderConsumer) {
+        Wheel.Builder wheelBuilder = Wheel.builder();
+        wheelBuilderConsumer.accept(wheelBuilder);
+        this.wheelList.add(wheelBuilder.build());
         return this;
     }
 
-    public Wheel.Builder addWheel() {
-        Wheel.Builder builder = Wheel.builder();
-        builder.withWheelListBuilder(this);
-        return builder;
-    }
-
-    public Car.Builder done() { return this.carBuilder.addWheels(this.build()); }
-
-    void withCar(Car.Builder carBuilder) { this.carBuilder = carBuilder; }
-
-    private List<Wheel> build() {
+    List<Wheel> build() {
         if (this.wheelList.size() > 4) throw new IllegalArgumentException("the maximum of wheel is 4");
         return this.wheelList;
     }

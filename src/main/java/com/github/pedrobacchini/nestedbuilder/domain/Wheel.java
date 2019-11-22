@@ -15,7 +15,7 @@ public class Wheel {
         this.colour = builder.colour;
     }
 
-    static Builder builder() { return new Builder(); }
+    public static Builder builder() { return new Builder(); }
 
     @SuppressWarnings("unused")
     public static Builder builder(Wheel copy) {
@@ -30,7 +30,6 @@ public class Wheel {
         private int size;
         private int type;
         private int colour;
-        private WheelListBuilder wheelListBuilder;
 
         private Builder() {}
 
@@ -49,10 +48,6 @@ public class Wheel {
             return this;
         }
 
-        public WheelListBuilder addWheelToList() { return this.wheelListBuilder.addWheel(this.build()); }
-
-        void withWheelListBuilder(WheelListBuilder wheelListBuilder) { this.wheelListBuilder = wheelListBuilder; }
-
-        private Wheel build() { return new Wheel(this); }
+        public Wheel build() { return new Wheel(this); }
     }
 }
